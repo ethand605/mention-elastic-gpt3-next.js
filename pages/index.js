@@ -52,7 +52,7 @@ export default function Home({ elasticsearchClient }) {
       body: JSON.stringify(data),
     });
     const resp = await response.json();
-    console.log('from ESS', resp);
+    // console.log('from ESS', resp);
   }
 
   return (

@@ -38,9 +38,9 @@ export async function storeToESS (client, data) {
 
     // create index and store data
     await client.indices.create({ index: PPL_INDEX });
-    console.log('data', data);
+    // console.log('data', data);
     for (const person of data) {
-        console.log('inserting', person);
+        // console.log('inserting', person);
         await client.index({
             index: PPL_INDEX,
             document: {
