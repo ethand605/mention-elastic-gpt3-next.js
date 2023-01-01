@@ -1,8 +1,9 @@
-import { useState } from "react";
-// import styles from "./index.module.css";
+import { useState, useEffect } from "react";
 
-export default function Home() {
-  const [result, setResult] = useState({});
+
+
+export default function Home({ elasticsearchClient }) {
+  const [result, setResult] = useState([]); //name,email,label
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -18,15 +19,28 @@ export default function Home() {
       if (response.status !== 200) {
         throw data.error || new Error(`Request failed with status ${response.status}`);
       }
-      console.log(data);
-      const namesNdEmails = {}
-      data.result.trim().split("\n").map(line => {
-        const [username, email] = line.split(",");
-        namesNdEmails[username] = email;
+      console.log(data.result);
+      const employees = data.result.slice(0,Math.floor(data.result.length/2));
+      const customers = data.result.slice(Math.floor(data.result.length/2));
+      console.log(employees);
+      console.log(customers);
+      employees.trim().split("\n").map(line => {
+        const [name, email] = line.split(",");
+        setResult(result => [...result, {
+          name,
+          email,
+          label:'employee'
+        }])
       });
-      //edit the result object
-      setResult(namesNdEmails);
-  
+      customers.trim().split("\n").map(line => {
+        const [name, email] = line.split(",");
+        setResult(result => [...result, {
+          name,
+          email,
+          label:'customer'
+        }])
+      });
+      console.log(result);
     } catch(error) {
       console.error(error);
       alert(error.message);
@@ -39,16 +53,14 @@ export default function Home() {
         <form onSubmit={onSubmit}>
           <input type="submit" value="Generate names" />
         </form>
-        {result && Object.keys(result).map((username, index) => {
-          return (
-            <div key={index}>
-              <p>{username}</p>
-              <p>{result[username]}</p>
-            </div>
-          )
+        {result && result.map(({name, email, label}) => (
+          <div key={email}>
+            <p>{`${name}, ${email}, ${label}`}</p>
+          </div>
+        ))
         }
-        )}
       </main>
     </div>
   );
 }
+
