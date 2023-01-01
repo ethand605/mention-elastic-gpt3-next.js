@@ -5,7 +5,7 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-export default async function (req, res) {
+export default async function handler (req, res) {
   if (!configuration.apiKey) {
     res.status(500).json({
       error: {
@@ -18,9 +18,9 @@ export default async function (req, res) {
   try {
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: 'generate 25 random names and emails, one name and one email per line, name and email seperated by comma',
+      prompt: 'generate 18 random names and emails, one name and one email per line, name and email seperated by comma',
       // temperature: 0.7,
-      max_tokens: 1000,
+      max_tokens: 3000,
 
     });
     res.status(200).json({result: completion.data.choices[0].text});
