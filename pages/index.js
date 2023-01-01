@@ -43,13 +43,13 @@ export default function Home({ elasticsearchClient }) {
     }
   }
 
-  async function storePeople(data) {
+  async function storePeople(ary) {
     const response = await fetch("/api/elastic", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(ary),
     });
     const resp = await response.json();
     // console.log('from ESS', resp);
