@@ -57,7 +57,7 @@ export default function Home({ elasticsearchClient }) {
 
   return (
     <div>
-        <button onClick={generatePeople}>Generate names</button>
+        <button onClick={generatePeople}>Generate people(may be delayed)</button>
         {stored && <MentionBox/>}
     </div>
   );

@@ -18,7 +18,7 @@ export default async function (req, res) {
   try {
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: 'generate 6 random names and emails, one name and one email per line, name and email seperated by comma',
+      prompt: 'generate 25 random names and emails, one name and one email per line, name and email seperated by comma',
       // temperature: 0.7,
       max_tokens: 1000,
 
