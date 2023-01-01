@@ -67,7 +67,7 @@ export default function MentionBox(){
                 id: user.id,
                 display: `${user.name}(${user.label})`
             }))}
-            style={{ backgroundColor: 'green' }}
+            style={{ backgroundColor: 'blue' }}
           />
         </MentionsInput>
 
