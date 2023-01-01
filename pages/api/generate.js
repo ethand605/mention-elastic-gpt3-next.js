@@ -14,7 +14,7 @@ export default async function (req, res) {
     });
     return;
   }
-
+  //TODO: deal with the issue where the api result is broken into multiple parts
   try {
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
