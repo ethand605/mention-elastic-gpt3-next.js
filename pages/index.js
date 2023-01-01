@@ -2,7 +2,7 @@ import { useState} from "react";
 import MentionBox from "../components/MentionBox";
 
 export default function Home({ elasticsearchClient }) {
-  const [result, setResult] = useState([]); //name,email,label
+  // const [result, setResult] = useState([]); //name,email,label
   const [stored, setStored] = useState(false);
 
   async function generatePeople() {
@@ -18,29 +18,24 @@ export default function Home({ elasticsearchClient }) {
       if (response.status !== 200) {
         throw data.error || new Error(`Request failed with status ${response.status}`);
       }
-      // console.log(data.result);
-      const employees = data.result.slice(0,Math.floor(data.result.length/2));
-      const customers = data.result.slice(Math.floor(data.result.length/2));
-      // console.log(employees);
-      // console.log(customers);
-      employees.trim().split("\n").map(line => {
-        const [name, email] = line.split(",");
-        setResult(result => [...result, {
+      console.log(data.result);
+      const users = data.result.trim().split("\n");
+      const half = Math.floor(users.length / 2);
+      
+      const userAry = [];
+      for (let i = 0; i < users.length; i++){
+        const [name, email] = users[i].split(",");
+        const label = i < half ? 'employee' : 'customer';
+        userAry.push({
           name,
           email,
-          label:'employee'
-        }])
-      });
-      customers.trim().split("\n").map(line => {
-        const [name, email] = line.split(",");
-        setResult(result => [...result, {
-          name,
-          email,
-          label:'customer'
-        }])
-      });
+          label
+        });
+      }
 
-      await storePeople();
+      console.log(userAry);
+
+      await storePeople(userAry);
       setStored(true);
     } catch(error) {
       console.error(error);
@@ -48,27 +43,21 @@ export default function Home({ elasticsearchClient }) {
     }
   }
 
-  async function storePeople() {
+  async function storePeople(data) {
     const response = await fetch("/api/elastic", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(result),
+      body: JSON.stringify(data),
     });
-    const data = await response.json();
-    console.log('from ESS', data);
+    const resp = await response.json();
+    console.log('from ESS', resp);
   }
 
   return (
     <div>
         <button onClick={generatePeople}>Generate names</button>
-        {/* <div>{result && result.map(({name, email, label}) => (
-          <div key={email}>
-            <p>{`${name}, ${email}, ${label}`}</p>
-          </div>
-          ))
-        }</div> */}
         {stored && <MentionBox/>}
     </div>
   );

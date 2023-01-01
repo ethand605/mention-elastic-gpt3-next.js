@@ -16,7 +16,6 @@ export default async function handler(req, res) {
             await storeToESS(client, req.body);
             res.status(200).json({message: 'successfully stored people to elasticsearch'});
         } else if (req.method==='GET'){
-            
             const result = await client.search({
                 index: PPL_INDEX,
               });
@@ -32,12 +31,16 @@ export default async function handler(req, res) {
 export async function storeToESS (client, data) {
     // delete index, check if already exists
     const indexExists = await client.indices.exists({ index: PPL_INDEX });
-    if (indexExists.body) {
+    if (indexExists) {
+        console.log('deleting index');
         await client.indices.delete({ index: PPL_INDEX });
     }
 
     // create index and store data
+    await client.indices.create({ index: PPL_INDEX });
+    console.log('data', data);
     for (const person of data) {
+        console.log('inserting', person);
         await client.index({
             index: PPL_INDEX,
             document: {
@@ -45,13 +48,11 @@ export async function storeToESS (client, data) {
               email: person.email,
               label: person.label
             }
-          });
+        });
     }
 
     // here we are forcing an index refresh, otherwise we will not
     // get any result in the consequent search
     await client.indices.refresh({ index: PPL_INDEX });
-  
-    
 }
 
