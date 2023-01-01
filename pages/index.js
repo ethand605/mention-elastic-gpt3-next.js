@@ -1,6 +1,9 @@
 import { useState} from "react";
+import MentionBox from "../components/MentionBox";
+
 export default function Home({ elasticsearchClient }) {
   const [result, setResult] = useState([]); //name,email,label
+  const [stored, setStored] = useState(false);
 
   async function generatePeople() {
     try {
@@ -37,24 +40,8 @@ export default function Home({ elasticsearchClient }) {
         }])
       });
 
-      // const resp = await fetch("/api/connectAndStore", {
-      //   method: "GET",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      // });
-      // const data2 = await resp.json();
-      // console.log(data2);
-
-      // const resp2 = await fetch("/api/connectAndStore", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(result),
-      // });
-      // const data3 = await resp2.json();
-      // console.log('from ESS', data3);
+      await storePeople();
+      setStored(true);
     } catch(error) {
       console.error(error);
       alert(error.message);
@@ -62,7 +49,7 @@ export default function Home({ elasticsearchClient }) {
   }
 
   async function storePeople() {
-    const response = await fetch("/api/store", {
+    const response = await fetch("/api/elastic", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -75,16 +62,14 @@ export default function Home({ elasticsearchClient }) {
 
   return (
     <div>
-      <main>
         <button onClick={generatePeople}>Generate names</button>
-        <button onClick={storePeople}>Store to ElasticSearch</button>
-        {result && result.map(({name, email, label}) => (
+        {/* <div>{result && result.map(({name, email, label}) => (
           <div key={email}>
             <p>{`${name}, ${email}, ${label}`}</p>
           </div>
-        ))
-        }
-      </main>
+          ))
+        }</div> */}
+        {stored && <MentionBox/>}
     </div>
   );
 }

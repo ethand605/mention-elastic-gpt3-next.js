@@ -10,8 +10,23 @@ const client = new Client({
      }
   });  //this is connected from the get go
 
-export default async function store(req, res) {
-    const people = await storeToESS(client, req.body)
+export default async function handler(req, res) {
+    try{
+        if (req.method==='POST'){
+            await storeToESS(client, req.body);
+            res.status(200).json({message: 'successfully stored people to elasticsearch'});
+        } else if (req.method==='GET'){
+            
+            const result = await client.search({
+                index: PPL_INDEX,
+              });
+            res.status(200).json(result.hits.hits);
+        }   
+    }catch(error){
+        console.error(error);
+        res.status(500).json({message: error.message});
+    }
+    
 }
 
 export async function storeToESS (client, data) {
@@ -37,10 +52,6 @@ export async function storeToESS (client, data) {
     // get any result in the consequent search
     await client.indices.refresh({ index: PPL_INDEX });
   
-    const result = await client.search({
-      index: PPL_INDEX,
-    });
-  
-    return result.hits.hits;
+    
 }
 
