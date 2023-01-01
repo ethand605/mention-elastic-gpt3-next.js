@@ -17,19 +17,19 @@ export default function MentionBox(){
           .then((res) => res.json())
           .then((data) => {
             data.forEach(person => {
-                if (person['_source']['label']=='employee'){
+                if (person['_source']['type']=='employee'){
                     setCustomers(customers => [...customers, {
                         id: person['_id'],
                         name: person['_source']['name'],
                         email: person['_source']['email'],
-                        label: 'employee'
+                        type: 'employee'
                     }])
                 }else{
                     setEmployees(employees => [...employees, {
                         id: person['_id'],
                         name: person['_source']['name'],
                         email: person['_source']['email'],
-                        label: 'customer'
+                        type: 'customer'
                     }])
                 }
             })
@@ -54,9 +54,9 @@ export default function MentionBox(){
             trigger="@"
             data={employees.map(user => ({
                 id: user.id,
-                display: `${user.name}(${user.label})`
+                display: `${user.name}(${user.type})`
               }))}
-            style={{ backgroundColor: 'red'}}
+            style={{ backgroundColor: '#ffcccb'}}
           />
           <Mention
             className="mentions__mention__customer"
@@ -65,9 +65,9 @@ export default function MentionBox(){
             trigger="@"
             data={customers.map(user => ({
                 id: user.id,
-                display: `${user.name}(${user.label})`
+                display: `${user.name}(${user.type})`
             }))}
-            style={{ backgroundColor: 'blue' }}
+            style={{ backgroundColor: '#ADD8E6' }}
           />
         </MentionsInput>
 

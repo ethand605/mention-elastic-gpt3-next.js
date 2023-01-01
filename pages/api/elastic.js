@@ -18,7 +18,9 @@ export default async function handler(req, res) {
         } else if (req.method==='GET'){
             const result = await client.search({
                 index: PPL_INDEX,
-              });
+                "size": 100
+            }
+            );
             res.status(200).json(result.hits.hits);
         }   
     }catch(error){
@@ -46,7 +48,7 @@ export async function storeToESS (client, data) {
             document: {
               name: person.name,
               email: person.email,
-              label: person.label
+              type: person.label
             }
         });
     }
